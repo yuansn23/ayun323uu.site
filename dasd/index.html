@@ -1,0 +1,800 @@
+<!DOCTYPE html><html lang="zh-TW"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secret Match</title>
+  <script async="" src="js/fbevents.js"></script><script defer="" src="js/script.js" data-website-id="6f10b6ac-ac68-43d2-9300-77e3d40f719c"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1a0014;
+      --bg2: #240018;
+      --card: #2b001e;
+      --card2: #350025;
+      --border: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --muted: #c0a0b8;
+      --green: #00b900;
+      --green-hover: #009900;
+      --pink: #e8396a;
+      --pink2: #c42050;
+      --btn-grad: linear-gradient(135deg, #e8396a 0%, #b01a40 100%);
+      --tag-bg: rgba(255,255,255,0.06);
+      --tag-active: rgba(220,30,70,0.35);
+      --tag-active-border: #e8396a;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(26,0,20,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-logo svg { width: 20px; height: 20px; fill: var(--pink); }
+
+    .btn-line {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 8px 18px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-line:hover { background: var(--green-hover); }
+
+    .btn-line .line-icon {
+      width: 18px; height: 18px;
+      background: #fff;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .btn-line .line-icon svg { width: 12px; height: 12px; fill: var(--green); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 60px 5% 70px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-left { display: flex; flex-direction: column; gap: 16px; }
+
+    .hero-title {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: 0.88rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .hero-subtitle span { opacity: 0.6; }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ── FILTER PANEL ── */
+    .filter-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .filter-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .filter-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .chip:hover { border-color: var(--pink); color: #fff; }
+
+    .chip.active {
+      background: var(--tag-active);
+      border-color: var(--tag-active-border);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-pink {
+      background: var(--btn-grad);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      transition: opacity 0.2s;
+    }
+
+    .btn-pink:hover { opacity: 0.88; }
+
+    .hero-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ── PHOTO STACK ── */
+    .photo-stack {
+      position: relative;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .photo-card {
+      position: absolute;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      width: 220px;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-name {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.75));
+      padding: 18px 10px 10px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .photo-card:nth-child(1) {
+      transform: rotate(-6deg) translate(-80px, 10px);
+      z-index: 1;
+      width: 200px;
+    }
+    .photo-card:nth-child(2) {
+      transform: rotate(4deg) translate(60px, -20px);
+      z-index: 2;
+      width: 210px;
+    }
+    .photo-card:nth-child(3) {
+      transform: rotate(-2deg) translate(-10px, 40px);
+      z-index: 3;
+      width: 220px;
+    }
+
+    /* ── GALLERY ── */
+    .section {
+      padding: 50px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gallery-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--pink2) transparent;
+      cursor: grab;
+    }
+
+    .gallery-scroll:active { cursor: grabbing; }
+
+    .gallery-scroll::-webkit-scrollbar { height: 4px; }
+    .gallery-scroll::-webkit-scrollbar-track { background: transparent; }
+    .gallery-scroll::-webkit-scrollbar-thumb { background: var(--pink2); border-radius: 2px; }
+
+    .gallery-item {
+      position: relative;
+      flex: 0 0 260px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+
+    .gallery-item:hover img { transform: scale(1.04); }
+
+    .gallery-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 30px 14px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .gallery-label .dot {
+      width: 6px; height: 6px;
+      background: var(--pink);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 50px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-icon { font-size: 1.6rem; }
+
+    .feature-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .feature-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── CTA ── */
+    .cta {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 5%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .cta-title {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+    }
+
+    .cta-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .btn-line-lg {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 36px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-line-lg:hover { background: var(--green-hover); }
+
+    .cta-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 5%;
+      border-top: 1px solid var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-brand { display: flex; flex-direction: column; gap: 6px; }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .footer-logo svg { width: 16px; height: 16px; fill: var(--pink); }
+
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: #fff; }
+
+    .footer-legal {
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.55;
+      line-height: 1.8;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 40px 5% 50px;
+      }
+
+      .photo-stack {
+        height: 280px;
+        order: -1;
+      }
+
+      .photo-card { width: 160px !important; }
+      .photo-card img { height: 210px; }
+
+      .photo-card:nth-child(1) { transform: rotate(-6deg) translate(-60px, 8px); }
+      .photo-card:nth-child(2) { transform: rotate(4deg) translate(45px, -15px); }
+      .photo-card:nth-child(3) { transform: rotate(-2deg) translate(-5px, 30px); }
+
+      .filter-row { grid-template-columns: 1fr; gap: 12px; }
+
+      .features-grid { grid-template-columns: 1fr; padding: 30px 5%; }
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 28px 4% 40px; }
+      .section { padding: 36px 4%; }
+      .features-grid { padding: 20px 4%; }
+
+      .photo-stack { height: 240px; }
+      .photo-card { width: 140px !important; }
+      .photo-card img { height: 185px; }
+
+      .gallery-item { flex: 0 0 200px; }
+
+      .footer-top { flex-direction: column; gap: 14px; }
+
+      nav { padding: 0 4%; }
+
+      .cta { padding: 44px 4%; }
+    }
+
+    @media (max-width: 380px) {
+      .hero-title { font-size: 1.5rem; }
+      .filter-row { grid-template-columns: 1fr; }
+    }
+
+    /* subtle bg texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(180,20,60,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 35% at 10% 80%, rgba(120,10,50,0.12) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body > * { position: relative; z-index: 1; }
+  </style>
+  <script src="js/js.js"></script>
+  <script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1378313257060119');//new
+fbq('init', '876516961850193');//Isabellagrace
+fbq('init', '2480445135760977');//BM5 2756
+fbq('track', 'PageView');
+//fbq('track', 'Contact');
+</script>
+
+
+
+
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav>
+  <div class="nav-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+    Secret Match
+  </div>
+  <button class="btn-line" onclick="showline1()">
+    <span class="line-icon">
+      <svg viewBox="0 0 24 24"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.070 9.436-6.975C23.176 14.393 24 12.458 24 10.314"></path></svg>
+    </span>
+    立即約炮
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-left">
+    <h1 class="hero-title">極致肉慾・深夜約炮</h1>
+    <p class="hero-subtitle">
+      今晚就能上<span>｜</span>真人肉體<span>｜</span>越約越刺激，隨叫隨到
+      <span style="color:var(--pink);">🔴</span>
+    </p>
+    <div class="hero-tags">
+      <span class="tag">18+ 成人約炮</span>
+      <span class="tag">真人肉見</span>
+      <span class="tag">匿名保密</span>
+    </div>
+
+    <div class="filter-panel">
+      <div class="filter-row">
+        <div class="filter-group">
+          <span class="filter-label">🌸 年齡偏好</span>
+          <div class="filter-chips">
+            <span class="chip active">全部</span>
+            <span class="chip">18-25歲</span>
+            <span class="chip">26-35歲</span>
+            <span class="chip">35歲以上</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">⚡ 性癖類型</span>
+          <div class="filter-chips">
+            <span class="chip active">全部</span>
+            <span class="chip">甜美鄰貨</span>
+            <span class="chip">性感尤物</span>
+            <span class="chip">清純女神</span>
+            <span class="chip">熟女人妻</span>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">👙 身材類型</span>
+          <div class="filter-chips">
+            <span class="chip active">全部</span>
+            <span class="chip">苗條</span>
+            <span class="chip">豐滿</span>
+            <span class="chip">健美</span>
+            
+          </div>
+        </div>
+      </div>
+
+    <button class="btn-pink" onclick="showline1()">
+        <span class="line-icon" style="background:#fff;border-radius:4px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <img src="images/line_macos_bigsur_icon_190036.png" style="width:18px;height:18px;" alt="LINE">
+        </span>
+        加LINE立即約炮
+      </button>
+    </div>
+
+    <p class="hero-note">選好口味後，自動配對最適合你的肉體，今晚就能約。</p>
+  </div>
+
+  <div class="photo-stack">
+    <div class="photo-card">
+      <img src="images/AA3.jpg" alt="">
+      <div class="photo-name">艾拉 · 性感妩媚</div>
+    </div>
+    <div class="photo-card">
+      <img src="images/AA2.jpg" alt="">
+      <div class="photo-name">語婕 · 清純優雅</div>
+    </div>
+    <div class="photo-card">
+      <img src="images/AA1.jpg" alt="">
+      <div class="photo-name">沛沛 · 性感妩媚</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALLERY ── -->
+<div style="background:var(--bg2);padding: 4px 0;">
+<div class="section">
+  <h2 class="section-title">真人肉體・露骨展示</h2>
+  <p class="section-sub"><span>👉</span> 左右滑動查看更多。約過的都說爽。</p>
+
+  <div class="gallery-scroll" id="gallery">
+    <div class="gallery-item">
+      <img src="images/B1.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>沛沛・騷浪叫床</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/B2.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>Melody・人妻偷情</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/B3.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>Rita · 情趣SM</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/B4.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>琪琪 · 口交技巧好</div>
+    </div>
+    <div class="gallery-item">
+      <img src="images/A1.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>安安 · 制服誘惑</div>
+    </div>
+        <div class="gallery-item">
+      <img src="images/B6.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>婉蓉 · 瑜珈後入</div>
+    </div>
+            <div class="gallery-item">
+      <img src="images/B7.jpg" alt="">
+      <div class="gallery-label"><span class="dot"></span>可欣 · 熟女口交</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ── FEATURES ── -->
+<div class="features-grid">
+  <div class="feature-card">
+    <div class="feature-icon">🔥</div>
+    <div class="feature-title">男人的極樂天堂</div>
+    <div class="feature-desc">100% 懂你性癖，不廢話直接約。今晚幹誰你決定。</div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔒</div>
+    <div class="feature-title">匿名的炮，絕對保密</div>
+    <div class="feature-desc">雙方匿名安全，約完即走不糾纏。偷吃也不怕被抓包。</div>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon" style="color:#4ade80;">✅</div>
+    <div class="feature-title">真人肉見，保證實戰</div>
+    <div class="feature-desc">拒絕照騙與機器人，人工嚴選真實肉體。約到真的幹得到。</div>
+  </div>
+</div>
+
+<!-- ── CTA ── -->
+<div class="cta">
+  <h2 class="cta-title">準備好幹一發了嗎？ 💗</h2>
+  <p class="cta-sub">今晚就能約到真人肉體，立刻加入 LINE 開始你的極樂之旅。</p>
+  <button class="btn-line-lg" onclick="showline1()">
+    <span class="line-icon" style="background:#fff;border-radius:4px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <img src="images/line_macos_bigsur_icon_190036.png" alt="LINE" style="width:16px;height:16px;display:block;">
+    </span>
+    加 LINE 立即的炮
+  </button>
+  <p class="cta-note">溫馨提醒：僅限雙方同意之成人約會，請尊重彼此界限。</p>
+</div>
+
+<!-- ── FOOTER ── -->
+<div style="background:var(--bg2);">
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+        Secret Match
+      </div>
+      <p class="footer-tagline">台灣頂級約炮社群・成人限定，匿名保密，今晚就能約。</p>
+    </div>
+    <div class="footer-links">
+      <a href="#">使用條款</a>
+      <a href="#">隱私政策</a>
+      <a href="#">聯絡我們</a>
+    </div>
+  </div>
+  <div class="footer-legal">
+    法律聲明：本平台僅提供成人約會配對服務，不涉及金錢交易。所有約會均為雙方自願同意，請遵守中華民國法律，尊重彼此意願與界限。
+  </div>
+</footer>
+</div>
+
+<script>
+  // Chip toggle
+  document.querySelectorAll('.filter-chips').forEach(group => {
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+  });
+
+  // Drag-scroll gallery
+  const gallery = document.getElementById('gallery');
+  let isDown = false, startX, scrollLeft;
+  gallery.addEventListener('mousedown', e => {
+    isDown = true;
+    startX = e.pageX - gallery.offsetLeft;
+    scrollLeft = gallery.scrollLeft;
+  });
+  gallery.addEventListener('mouseleave', () => isDown = false);
+  gallery.addEventListener('mouseup', () => isDown = false);
+  gallery.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - gallery.offsetLeft;
+    gallery.scrollLeft = scrollLeft - (x - startX) * 1.5;
+  });
+</script>
+
+<script>
+var sjline1 = "https://snaphub.xx.kg/?ref=mqyt"; // 更改跳转链接
+function showline1() {
+    // 触发 Facebook Pixel 事件
+    if (typeof fbq !== 'undefined') {
+     // fbq("track", "AddToCart");//加入购物车  AddToCart
+      fbq("track", "Contact");//联系 Contact
+
+    }
+    // 触发 Umami 事件
+    if (typeof umami !== 'undefined') {
+      umami.track('Join Now');
+    }
+    // 延迟跳转（给事件上报留出 200 毫秒的时间）
+    setTimeout(function() {
+      window.location.href = sjline1;
+    }, 200);
+  }
+</script>
+
+
+</body></html>
