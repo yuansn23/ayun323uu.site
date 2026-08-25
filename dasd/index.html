@@ -783,25 +783,6 @@ fbq('track', 'PageView');
   });
 </script>
 
-<script>
-var sjline1 = "https://snaphub.xx.kg/?ref=mqyt"; // 更改跳转链接
-function showline1() {
-    // 触发 Facebook Pixel 事件
-    if (typeof fbq !== 'undefined') {
-     // fbq("track", "AddToCart");//加入购物车  AddToCart
-      fbq("track", "Contact");//联系 Contact
-
-    }
-    // 触发 Umami 事件
-    if (typeof umami !== 'undefined') {
-      umami.track('Join Now');
-    }
-    // 延迟跳转（给事件上报留出 200 毫秒的时间）
-    setTimeout(function() {
-      window.location.href = sjline1;
-    }, 200);
-  }
-</script>
-
+ 
 
 </body></html>
